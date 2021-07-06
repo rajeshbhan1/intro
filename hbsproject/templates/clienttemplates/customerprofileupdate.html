@@ -1,0 +1,26 @@
+{% extends 'clienttemplates/clientbase.html' %}
+
+{% block title %}Profile Update{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="row mt-3">
+            <div class="col-md-6 mx-auto">
+                <div class="card">
+                    <div class="card-head" style="background-color: rgb(238, 237, 237);color:rgb(76, 77, 76)">
+                        <h5 class="card-title p-3">Profile Update Form </h5>
+                    </div>
+                    <div class="card-body">
+                        <form action="" method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            {{customer_form.as_p}}
+                            <button class="btn btn-secondary">Save Changes</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

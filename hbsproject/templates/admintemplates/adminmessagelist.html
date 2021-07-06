@@ -1,0 +1,59 @@
+{% extends 'admintemplates/adminbase.html' %}
+
+{% block title %}Messages List{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="//cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
+{% endblock %}
+
+{% block content %}
+<div class="row mt-3">
+    <div class="col-md-12">
+        <div class="card p-3">
+            <div class="row">
+                <div class="col-md-12">
+                    <h4 class="text-center">Received Messages <small></small></h4>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>SN</th>
+                                <th>Sender</th>
+                                <th>Email</th>
+                                <th>Mobile</th>
+                                <th>Message</th>
+                                <th>Sent Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for message in all_messages %}
+                            <tr title="{{message.message}}" style="cursor: pointer;">
+                                <td>{{forloop.counter}}</td>
+                                <td>{{message.full_name}}</td>
+                                <td>{{message.email}}</td>
+                                <td>{{message.mobile}}</td>
+                                <td>{{message.message|truncatechars:50}}</td>
+                                <td>{{message.created_at|date}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script src="//cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.table').DataTable();
+    });
+</script>
+{% endblock %}

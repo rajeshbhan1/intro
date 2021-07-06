@@ -1,0 +1,22 @@
+{% extends 'admintemplates/adminbase.html' %}
+{% block title %}Hotel Form{% endblock %}
+
+{% block content %}
+<div class="row mt-3">
+    <div class="col-md-6 mx-auto">
+        <div class="card p-3">
+            <div class="card-title">
+                <h4>Add new hotel</h4>
+            </div>
+            <div class="card-body">
+
+                <form action="" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{hotelform.as_p}}
+                    <button class="btn btn-secondary w-100">Save Data</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends 'clienttemplates/clientbase.html' %}
+
+{% block title %}Customer Registration{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="row mt-3">
+            <div class="col-md-6 mx-auto">
+                <div class="card">
+                    <div class="card-head" style="background-color: rgb(238, 237, 237);color:rgb(76, 77, 76)">
+                        <h5 class="card-title p-3">Customer Registration Form </h5>
+                    </div>
+                    <div class="card-body">
+                        <form action="" method="POST">
+                            {% csrf_token %}
+                            {{registrationform.as_p}}
+                            <button class="btn btn-secondary">Signup as a Customer</button>
+                        </form>
+                        <hr>
+                        <p>Already have an account? <a href="{% url 'hbsapp:customerlogin' %}{% if request.GET.next %}?next={{request.GET.next}}{% endif %}"> Login as a Customer</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

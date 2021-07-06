@@ -1,0 +1,105 @@
+{% extends 'clienttemplates/clientbase.html' %}
+{% load static %}
+{% block title %}Customer Profile{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="//cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
+{% endblock %}
+
+{% block content %}
+<div class="row mt-3">
+    <div class="col-md-12">
+        <div class="card p-3">
+            <div class="row">
+                <div class="col-md-12">
+                    <h4>Customer Profile <!--<a href="{% url 'hbsapp:customerpasswordchange' %}" class="btn btn-danger m-1" style="float: right;">Change Password</a>-->
+                        <a href="{% url 'hbsapp:customerprofileupdate' %}" class="btn btn-info m-1" style=" float: right;">Update Profile</a>
+                    </h4>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-5">
+                    <div class="card p-3">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <table class="table table-bordered">
+                                    <tbody>
+                                        <tr>
+                                            <th>Customer Name: </th>
+                                            <td>{{customer.user.first_name}} {{customer.user.last_name}}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Customer Address: </th>
+                                            <td>{{customer.address}}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Customer Email: </th>
+                                            <td>{{customer.user.username}}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Mobile number: </th>
+                                            <td>{{customer.mobile}}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Customer Image </th>
+                                            <td><img src="{% if customer.profile_image %}{{customer.profile_image.url}}{% else %}{% static 'clientstatic/images/customer.png' %}{% endif %}"
+                                                    class="img-fluid" alt=""></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-7">
+                    <div class="card p-3">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h4>My Booking History</h4>
+                                <hr>
+                                <table class="table table-bordered" id="booking-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Hotel Room</th>
+                                            <th>Booked on</th>
+                                            <th>Booking for</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for booking in allbookings %}
+                                        <tr>
+                                            <td>
+                                                <a href="{% url 'hbsapp:customerbookingdetail' booking.id %}">{{booking.hotel_room.room_type}}
+                                                    ({{booking.hotel_room.room_code}}) at
+                                                    {{booking.hotel_room.hotel.name}} </a>
+                                            </td>
+                                            <td>{{booking.created_at}} </td>
+                                            <td>{{booking.booking_duration}} days </td>
+                                            <td>
+                                                <span
+                                                    class="badge bg-{% if booking.booking_status == 'Rejected' %}danger{% elif booking.booking_status == 'Pending' %}info{% else %}success{% endif %}">{{booking.booking_status}}</span>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+<script src="//cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#booking-table').DataTable();
+    });
+
+</script>
+{% endblock %}

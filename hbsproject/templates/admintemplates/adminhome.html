@@ -1,0 +1,65 @@
+{% extends 'admintemplates/adminbase.html'%}
+{% load humanize %}
+
+{% block title %}Admin Home{% endblock %}
+
+{% block content %}
+<div class="row mt-3">
+    <div class="col-md-12">
+        <div class="card p-3">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="card p-3 m-1" style="background-color: rgb(45, 33, 212)">
+                        <h3 class="text-center text-white">{{rooms.count}} / {{hotels.count}} </h3>
+                        <h4 class="text-center text-white"> Rooms / Hotels</h4>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card p-3 m-1" style="background-color: rgb(255, 12, 12)">
+                        <h3 class="text-center" style="color: white;">{{booking_requests.count}}</h3>
+                        <h4 class="text-center text-white">Pending Bookings</h4>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card p-3 m-1" style="background-color: rgb(13, 187, 120)">
+                        <h3 class="text-center text-white">{{confirmed_bookings.count}}/{{all_bookings.count}}</h3>
+                        <h4 class="text-center text-white">Confimed Bookings</h4>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card p-3 m-1" style="background-color: rgb(3, 223, 183)">
+                        <h3 class="text-center text-white">{{registered_customers}}</h3>
+                        <h4 class="text-center text-white">Registered Customer</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="card p-3 m-1" style="background-color: rgb(185, 176, 40)">
+                        <h5 class="text-center text-white">Rs. {{pending_amount|intcomma}}/- </h5>
+                        <h4 class="text-center text-white">Pending Amount</h4>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card p-3 m-1" style="background-color: rgb(21, 197, 124)">
+                        <h5 class="text-center text-white">Rs. {{collected_amount|intcomma}}/- </h5>
+                        <h4 class="text-center text-white">Amount Collected</h4>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card p-3 m-1" style="background-color: rgb(208, 44, 65)">
+                        <h5 class="text-center text-white">Rs. {{rejected_amount|intcomma}}/-</h5>
+                        <h4 class="text-center text-white">Rejected Amount</h4>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card p-3 m-1" style="background-color: #56328c;">
+                        <h5 class="text-center text-white">Rs. {{epayment|intcomma}}/-</h5>
+                        <h4 class="text-center text-white">ePayment Collected</h4>
+                    </div>
+                </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

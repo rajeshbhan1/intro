@@ -1,0 +1,21 @@
+{% extends 'admintemplates/adminbase.html' %}
+{% block title %}Hotel Room Form{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12 mx-auto">
+        <div class="">
+            <div class="row">
+                <div class="col-md-6 mx-auto p-3" style="background-color: azure;">
+                    <h4>Update <span style="color: rgb(22, 163, 163)">{{room.room_code}}</span> Hotel Room</h4>
+                    <form action="" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{roomform.as_p}}
+                        <button class="btn btn-secondary w-100">Save Data</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

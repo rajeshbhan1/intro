@@ -1,0 +1,64 @@
+<html>
+
+<head>
+    <script src="https://khalti.s3.ap-south-1.amazonaws.com/KPG/dist/2020.12.17.0.0.0/khalti-checkout.iffe.js"></script>
+</head>
+
+<body>
+    <h3 style="text-align: center;">Room Code: {{booking.hotel_room.room_code}}</h3>
+    <script>
+        var config = {
+            // replace the publicKey with yours
+            "publicKey": "{{booking.payment_method.test_public_key}}",
+            "productIdentity": "RMBK_{{booking.id}}",
+            "productName": "{{booking.hotel_room.room_code}}",
+            "productUrl": "http://{{request.META.HTTP_HOST}}{{booking.hotel_room.get_absolute_url}}",
+            "paymentPreference": [
+                "KHALTI",
+                "EBANKING",
+                "MOBILE_BANKING",
+                "CONNECT_IPS",
+                "SCT",
+            ],
+            "eventHandler": {
+                onSuccess(payload) {
+                    // hit merchant api for initiating verfication
+                    console.log(payload);
+                    var fd = new FormData();
+                    fd.append("csrfmiddlewaretoken", "{{csrf_token}}")
+                    fd.append("idx", payload.idx);
+                    fd.append("product_identity", payload.product_identity);
+                    fd.append("token", payload.token);
+                    fd.append("amount", payload.amount);
+
+                    fetch('{{booking.payment_method.return_url}}', {
+                        method: "POST",
+                        body: fd
+                    })
+                        .then(response => response.json())
+                        .then(json => {
+                            if(json.status == "success"){
+                                location.href = json.return_url;
+                            }else{
+                                location.href = json.return_url;
+                            }
+                        })
+                        .catch(err => console.log(err))
+                },
+                onError(error) {
+                    location.href = "";
+                },
+                onClose() {
+                    location.href = "";
+                }
+            }
+        };
+
+        var checkout = new KhaltiCheckout(config);
+        setTimeout(function () {
+            checkout.show({ amount: {{ booking.amount }} * 100});
+        }, 1000)
+    </script>
+</body>
+
+</html>

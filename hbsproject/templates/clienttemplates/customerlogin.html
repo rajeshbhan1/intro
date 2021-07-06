@@ -1,0 +1,29 @@
+{% extends 'clienttemplates/clientbase.html' %}
+
+{% block title %}Customer Login{% endblock %}
+
+{% block content %}
+<div class="row"  style="height: 80vh;">
+    <div class="col-md-12">
+        <div class="row mt-3">
+            <div class="col-md-6 mx-auto">
+                <div class="card">
+                    <div class="card-head" style="background-color: rgb(238, 237, 237);color:rgb(76, 77, 76)">
+                        <h5 class="card-title p-3">Customer Login Form </h5>
+                    </div>
+                    <div class="card-body">
+                        <form action="" method="POST">
+                            {% csrf_token %}
+                            {{loginform.as_p}}
+                            <button class="btn btn-secondary">Login</button>
+                        </form>
+                        <hr>
+                        <!-- <p>Forgot your password? <a href="{% url 'hbsapp:forgotpassword' %}"> Get Reset Link</a></p> -->
+                        <p>Don't have an account? <a href="{% url 'hbsapp:customerregister' %}{% if request.GET.next %}?next={{request.GET.next}}{% endif %}"> Register as a Customer</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

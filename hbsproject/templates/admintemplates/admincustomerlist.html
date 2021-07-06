@@ -1,0 +1,54 @@
+{% extends 'admintemplates/adminbase.html' %}
+{% block title %}Customer List{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="//cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
+{% endblock %}
+
+{% block content %}
+<div class="row mt-3">
+    <div class="col-md-12">
+        <div class="card p-3">
+            <div class="row">
+                <div class="col-md-12">
+                    <h4 class="text-center">Customer List</h4>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>SN</th>
+                        <th>Customer(Username)</th>
+                        <th>Mobile/Address</th>
+                        <th>Booking History</th>
+                        <th>Registered On</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for customer in all_customers %}
+                    <tr>
+                        <td>{{forloop.counter}}</td>
+                        <td><a href="{% url 'hbsapp:admincustomerdetail' customer.id %}">{{customer.user.first_name}} {{customer.user.last_name}}({{customer.user.username}})</a></td>
+                        <td>{{customer.mobile}}/{{customer.address}}</td>
+                        <td>{{customer.roombooking_set.count}} bookings</td>
+                        <td>{{customer.created_at|date}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script src="//cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.table').DataTable();
+    });
+</script>
+{% endblock %}

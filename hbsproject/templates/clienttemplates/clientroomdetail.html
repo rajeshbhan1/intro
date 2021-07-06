@@ -1,0 +1,242 @@
+{% extends 'clienttemplates/clientbase.html' %}
+{% block title %}{{room.room_type}} room at {{room.hotel.name}}{% endblock %}
+
+
+{% block css %}
+<style>
+    form label {
+        font-size: 12px;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div class="row mt-3">
+    <div class="col-md-12">
+        <div class="card p-3">
+            <h4>{{room.room_type}} room at {{room.hotel.name}}</h4>
+            <hr>
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="row">
+                        <div class="col-md-7">
+                            <img src="{{room.image.url}}" class="img-fluid"
+                                style="width: 100%;height: 300px; object-fit: contain;" alt="">
+                        </div>
+                        <div class="col-md-5">
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th>Hotel: </th>
+                                        <td><a
+                                                href="{% url 'hbsapp:clienthoteldetail' room.hotel.id %}">{{room.hotel}}</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Location: </th>
+                                        <td>{{room.hotel.address}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Room Code: </th>
+                                        <td>{{room.room_code}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Room Type: </th>
+                                        <td>{{room.room_type}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Maximum Capacity: </th>
+                                        <td>{{room.maximum_capacity}} persons</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Price: </th>
+                                        <td>{% if room.marked_price %}<s>Rs. {{room.marked_price}}/-</s> {% endif %}Rs.
+                                            {{room.price}}/-</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Total Views: </th>
+                                        <td>{{room.view_count}} views</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-md-12 mt-2">
+                            {{room.description|safe}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5>Overall Reviews and Ratings on this Room</h5>
+                                    {% if room.get_rating %}
+                                    <p> <span
+                                            style="background-color: gold; color: rgb(34, 4, 4); padding: 3px;">{{room.get_rating.0}}
+                                            stars</span> | {{room.get_rating.1}} reviews
+                                    </p>
+                                    {% else %}
+                                    <p>No reviews yet</p>
+                                    {% endif %}
+                                </div>
+                                <div class="card-body">
+                                    {% for rating in all_ratings %}
+                                    <div class="row border mb-2 p-2">
+                                        <div class="col-md-5">
+                                            <p>{{rating.customer.user.username}}</p>
+                                            <span
+                                                style="background-color: gold; color: rgb(34, 4, 4); padding: 3px;">{{rating.rating}}
+                                                stars</span>
+                                        </div>
+                                        <div class="col-md-7">
+                                            <p>{{rating.get_review}}</p> <!--for giving review -->
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 ">
+                    {% if request.user.customer %}
+
+                    <form class="bg-info p-3 mb-3" action="{% url 'hbsapp:customerroombooking' room.id %}" method="POST">
+                        <h6 class="text-white">Room Booking Form <br><small
+                                style="font-size: 11px; color: rgb(143, 3, 3);">fields marked with * are required
+                                fields.</small></h6>
+                        <hr>
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label for="">Total Persons <span class="text-danger">*</span></label>
+                                <select name="total_persons" id="total_persons" class="form-control">
+                                    {% for option in options %}
+                                    <option value="{{option}}">{{option}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-6 mt-1">
+                                <label for="">Booking Date<span class="text-danger">*</span></label>
+                                {{roombookingform.booking_starts}}
+                            </div>
+                            <div class="col-md-6 mt-1">
+                                <label for="">To <span class="text-danger">*</span></label>
+                                {{roombookingform.booking_ends}}
+                            </div>
+                            <div class="col-md-12 mt-1">
+                                <label for="">Message</label>
+                                {{roombookingform.message}}
+                            </div>
+                            <div class="col-md-12 mt-1">
+                                <label for="">Payment Method <span class="text-danger">*</span></label>
+                                {{roombookingform.payment_method}}
+                            </div>
+                        </div>
+                        <hr>
+                        <button id="book-btn" class="btn btn-outline-primary w-100">Book this Room</button>
+                    </form>
+                    {% else %}
+                    <div class="text-center mb-3 bg-info p-3">
+
+                        <h5>You need to login to book room.</h5>
+                        <p>If you already have an account</p>
+                        <a class="text-white" style="font-weight: bold;"
+                            href="{% url 'hbsapp:customerlogin' %}?next={{request.path}}">Login as a Customer</a>
+                        <p>If you don't have an account</p>
+                        <a class="text-white" style="font-weight: bold;"
+                            href="{% url 'hbsapp:customerregister' %}?next={{request.path}}">Register as a Customer</a>
+                    </div>
+                    {% endif %}
+                    <hr>
+                    <h5 style="background-color: rgb(30, 184, 143); color: white;padding: 10px 10px;">TOP Rated Hotel Rooms</h5>
+                    <hr>
+                    {% for room in most_rated_rooms %}
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <div class="card p-2 item" style="cursor: pointer; text-align: center;"
+                                data-url="{% url 'hbsapp:clientroomdetail' room.room_code room.id %}">
+                                <img src="{{room.image.url}}" class="img-fluid"
+                                    style="height: 200px; object-fit: contain;" alt="">
+                                <p style="font-size: 14px; color: rgb(46, 179, 172); font-weight: bold;margin-bottom: 0;">#{{room.room_code}}-{{room.hotel.name}}({{room.hotel.address}})</p><hr>
+                                <p style="font-size: 14px;margin-bottom: 0;">{{room.room_type}} (Max {{room.maximum_capacity}} persons)</p>
+                                <p style="font-size: 14px;margin-bottom: 0;">Price: {% if room.marked_price %}<s>Rs. {{room.marked_price}}/-</s>{% endif %} Rs. {{room.price}}/Day</p>
+
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+    document.addEventListener("DOMContentLoaded", function (e) {
+        document.getElementById("id_booking_starts").addEventListener("change", function (ev) {
+            var date = this.value
+            fetch(`{% url 'hbsapp:customerroomcheck' room.id %}?date=${date}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status == "error") {
+                        document.getElementById("book-btn").setAttribute("disabled", "disabled")
+                        Swal.fire({
+                            text: 'You can not choose the past date.',
+                            icon: 'error',
+                            confirmButtonText: 'Sorry'
+                        })
+                    } else if (data.status == "unavailable") {
+                        document.getElementById("book-btn").setAttribute("disabled", "disabled")
+                        Swal.fire({
+                            text: 'Sorry! this room is already booked for this date.',
+                            icon: 'error',
+                            confirmButtonText: 'Choose Another'
+                        })
+                    } else {
+                        document.getElementById("book-btn").removeAttribute("disabled")
+                    }
+                });
+        })
+    })
+</script>
+<script>
+    function compareDates() {
+        //Get the text in the elements
+        var from = document.getElementById('id_booking_starts').value;
+        var to = document.getElementById('id_booking_ends').value;
+
+        //Generate an array where the first element is the year, second is month and third is day
+        var splitFrom = from.split('/');
+        var splitTo = to.split('/');
+
+        //Create a date object from the arrays
+        var fromDate = Date.parse(splitFrom[0], splitFrom[1] - 1, splitFrom[2]);
+        var toDate = Date.parse(splitTo[0], splitTo[1] - 1, splitTo[2]);
+
+        //Return the result of the comparison
+        if (fromDate > toDate) {
+            document.getElementById("book-btn").setAttribute("disabled", "disabled")
+            Swal.fire({
+                text: 'Departure date must be greater than arrival date',
+                icon: 'error',
+                confirmButtonText: 'Sorry'
+            })
+        } else {
+            document.getElementById("book-btn").removeAttribute("disabled")
+        }
+    }
+</script>
+<script>
+    const items = document.getElementsByClassName("item");
+    Array.from(items).forEach(element => {
+        element.addEventListener("click", function (e) {
+            location.href = this.getAttribute("data-url")
+        })
+    });
+</script>
+{% endblock %}

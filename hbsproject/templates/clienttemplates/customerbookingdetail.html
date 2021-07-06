@@ -1,0 +1,194 @@
+{% extends 'clienttemplates/clientbase.html' %}
+
+{% block title %}Booking Detail {% endblock %}
+{% load humanize %}
+
+{% block content %}
+<div class="row mt-3">
+    <div class="col-md-12">
+        <div class="card p-3">
+            {% if request.GET.b == "s" %}
+            <div class="row">
+                <div class="col-md-12">
+                    <h4 class="text-center text-success">Booking Successful!!!</h4>
+                    <h4 class="text-center">Thanks for booking our Hotel Room. </h4>
+                </div>
+            </div>
+            {% endif %}
+            <div class="row">
+                <div class="col-md-6">
+                    <img src="{{booking.hotel_room.image.url}}" class="img-fluid" alt="">
+                </div>
+                <div class="col-md-6">
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <th>Hotel Room: </th>
+                                <td><a target="_blank" href="{% url 'hbsapp:clientroomdetail' booking.hotel_room.room_code  booking.hotel_room.id %}">{{booking.hotel_room.room_type}} ({{booking.hotel_room.room_code}}) at
+                                    {{booking.hotel_room.hotel}} </a></td>
+                            </tr>
+                            <tr>
+                                <th>Booking Status: </th>
+                                <td>
+                                    {% if bookign.booking_status == "Pending" %}
+                                    <span class="badge bg-info">{{booking.booking_status}}</span>
+                                    {% elif booking.booking_status == "Confirmed" %}
+                                    <span class="badge bg-success">{{booking.booking_status}}</span>
+                                    {% else %}
+                                    <span class="badge bg-danger">{{booking.booking_status}}</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% if booking.booking_status == "Rejected" %}
+                            <tr>
+                                <th>Remarks: </th>
+                                <td>{{booking.status_remarks}}</td>
+                            </tr>
+                            {% endif %}
+                            <tr>
+                                <th>Location: </th>
+                                <td>{{booking.hotel_room.hotel.address}}</td>
+                            </tr>
+                            <tr>
+                                <th>Booked on </th>
+                                <td>{{booking.created_at}} | <span class="text-info">{{booking.created_at|timesince}}
+                                        ago</span></td>
+                            </tr>
+                            <tr>
+                                <th>Booking for: </th>
+                                <td>{{booking.booking_starts}} -- {{booking.booking_ends}}</td>
+                            </tr>
+                            <tr>
+                                <th>Room Rate: </th>
+                                <td>Rs. {{booking.hotel_room.price|intcomma}}/- per day.</td>
+                            </tr>
+                            <tr>
+                                <th>Total Persons: </th>
+                                <td>{{booking.total_persons}} persons</td>
+                            </tr>
+                            <tr>
+                                <th>Total duration: </th>
+                                <td>{{booking.booking_duration}} days</td>
+                            </tr>
+                            {% if booking.customer_checked_in %}
+                            <tr>
+                                <th>Checked In Time: </th>
+                                <td>{{booking.checkin_time}}</td>
+                            </tr>
+                            <tr>
+                                <th>Checked Out Time: </th>
+                                <td>{{booking.checkout_time}}</td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                        <tfoot class="bg-dark text-white">
+                            <tr>
+                                <th>Total Amount: </th>
+                                <td>Rs. {{booking.amount|intcomma}}/-</td>
+                            </tr>
+                            <tr>
+                                <th>Payment Method: </th>
+                                <td>{{booking.payment_method}}</td>
+                            </tr>
+                            <tr>
+                                <th>Payment Status: </th>
+                                <td>{% if booking.payment_status %} Paid{% else %} Not paid{% endif %}</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                    {% if booking.booking_status != "Rejected" and booking.customer_checked_in is False %}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <button class="btn btn-danger" id="cancel-btn">Cancel Booking</button>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Overall Reviews and Ratings on this Room</h5>
+                            {% if booking.hotel_room.get_rating %}
+                            <p> <span style="background-color: gold; color: rgb(34, 4, 4); padding: 3px;">{{booking.hotel_room.get_rating.0}} stars</span> | {{booking.hotel_room.get_rating.1}} reviews
+                            </p>
+                            {% else %}
+                            <p>No reviews yet</p>
+                            {% endif %}
+                        </div>
+                        <div class="card-body">
+                            {% for rating in all_ratings %}
+                            <div class="row border mb-2 p-2">
+                                <div class="col-md-5">
+                                    <p>{{rating.customer.user.username}}</p>
+                                    <span style="background-color: gold; color: rgb(34, 4, 4); padding: 3px;">{{rating.rating}} stars</span>
+                                </div>
+                                <div class="col-md-7">
+                                    <p>{{rating.get_review}}</p>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Submit your review</h5>
+                        </div>
+                        <div class="card-body">
+                            {% if not booking.rating %}
+                            <form action="{% url 'hbsapp:customerrating' booking.id %}" method="POST">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <div class="col-md-10">
+                                        <select name="c_rating" id="" class="form-control" style="cursor: pointer;">
+                                            {% for rating in ratings %}
+                                            <option value="{{rating.0}}">{{rating.1}}({{rating.0}} stars)</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button class="btn btn-info">Submit</button>
+                                    </div>
+                                </div>
+
+                                {% else %}
+                                <h5>You have already submitted review for this room.</h5><hr>
+                                <p><span style="background-color: gold; color: rgb(34, 4, 4); padding: 3px;">{{booking.rating}} stars</span> | {{booking.get_review}}</p>
+
+                                {% endif %}
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+    var btn = document.getElementById('cancel-btn')
+    btn.addEventListener("click", function (e) {
+        e.preventDefault()
+        var cnfrm = confirm("Are you sure to cancel this booking?") //To cancel booking
+        if (cnfrm == true) {
+            var fd = new FormData();
+            fd.append("csrfmiddlewaretoken", "{{csrf_token}}")
+            fd.append("action", "cancel")
+            fetch('', {
+                method: "POST",
+                body: fd
+            }).then(response => response.json())
+                .then(json => {
+                    console.log(json)
+                    location.href = "";
+                })
+                .catch(err => console.log(err))
+        }
+    })
+</script>
+{% endblock %}

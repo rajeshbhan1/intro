@@ -1,0 +1,248 @@
+{% extends 'admintemplates/adminbase.html' %}
+{% load humanize %}
+
+{% block title %}Booking Detail {% endblock %}
+
+{% block content %}
+<div class="row mt-3">
+    <div class="col-md-12">
+        <div class="card p-3">
+            <div class="row">
+                <div class="col-md-5">
+                    <div class="card p-3">
+                        <img src="{{booking.hotel_room.image.url}}" class="img-fluid" alt="">
+                        <div class="row mt-3">
+                            <div class="col-md-12">
+                                <div class="card p-2">
+                                    <h4>Actions
+                                        <hr>
+                                    </h4>
+                                    {% if booking.booking_status == "Pending" %}
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <a href="" class="act-btn btn btn-info w-100" data-act="bc">Confirm</a> <br>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <a href="" class="act-btn btn btn-danger w-100" data-act="br">Reject</a>
+                                            <br>
+                                        </div>
+                                    </div>
+                                    {% elif booking.booking_status == "Confirmed" %}
+                                    {% if not booking.customer_checked_in %}
+                                    <a href="" class="act-btn btn btn-info" data-act="ci">Checked in</a> <br>
+                                    {% elif not booking.checkout_time %}
+                                    <a href="" class="act-btn btn btn-info" data-act="co"> Checked Out</a>
+                                    {% endif %}
+
+                                    {% else %}
+                                    {% endif %}
+                                    {% if not booking.payment_status and booking.booking_status != "Rejected" %}
+                                    <a href="" class="act-btn btn btn-success" data-act="mp">Make Paid</a>
+                                    {% endif %}
+                                    {% if booking.booking_status == "Rejected" %}
+                                    <div class="bg-danger p-3 ">
+                                        <p>Rejected Remarks: <span class="text-white">{{booking.status_remarks}}</span></p>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-7">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card p-1">
+                                <h5 class="card-heading text-center">Room Information
+                                    <hr>
+                                </h5>
+                                <div class="">
+                                    <table class="table table-bordered">
+                                        <tbody>
+                                            <tr>
+                                                <th>Room </th>
+                                                <td>{{booking.hotel_room.room_type}} ({{booking.hotel_room.room_code}})
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>Hotel </th>
+                                                <td>{{booking.hotel_room.hotel.name}}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Room Rate</th>
+                                                <td>Rs. {{booking.hotel_room.price}}/- /person/day</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Address </th>
+                                                <td>{{booking.hotel_room.hotel.address}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card p-1">
+                                <h5 class="card-heading text-center">Customer Information
+                                    <hr>
+                                </h5>
+                                <div class="">
+                                    <table class="table table-bordered">
+                                        <tbody>
+                                            <tr>
+                                                <th>Full name </th>
+                                                <td>{{booking.customer.user.first_name}}
+                                                    {{booking.customer.user.last_name}}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Customer Email </th>
+                                                <td>{{booking.customer.user.username}}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Mobile </th>
+                                                <td>{{booking.customer.mobile}}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Address </th>
+                                                <td>{{booking.customer.address}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mt-3">
+                            <div class="card p-1">
+                                <h5 class="card-heading text-center">Booking Information
+                                    <hr>
+                                </h5>
+                                <div class="">
+                                    <table class="table table-bordered">
+                                        <tbody>
+                                            <tr>
+                                                <th>Booked Status </th>
+                                                <td>
+                                                    {% if booking.booking_status == "Pending" %}
+                                                    <span class="badge bg-info">{{booking.booking_status}}</span>
+                                                    {% elif booking.booking_status == "Confirmed" %}
+                                                    <span class="badge bg-success">{{booking.booking_status}}</span>
+                                                    {% else %}
+                                                    <span class="badge bg-danger">{{booking.booking_status}}</span>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                            {% if booking.booking_status == "Rejected" %}
+                                            <tr>
+                                                <th>Rejection Remarks </th>
+                                                <td>
+                                                    {{booking.status_remarks}}
+                                                </td>
+                                            </tr>
+                                            {% endif %}
+                                            <tr>
+                                                <th>Booked on </th>
+                                                <td>{{booking.created_at}}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Arrival Date </th>
+                                                <td>{{booking.booking_starts}}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Departure Date </th>
+                                                <td>{{booking.booking_ends}}({{booking.booking_duration}} days) </td>
+                                            </tr>
+                                            <tr>
+                                                <th>Total Persons </th>
+                                                <td>{{booking.total_persons}}</td>
+                                            </tr>
+                                            {% if booking.rating %}
+                                            <tr>
+                                                <th>Reviews/Rating </th>
+                                                <td>{{booking.get_review}}<br><span style="background-color: gold; color: rgb(34, 4, 4); padding: 3px;">{{booking.rating}} stars</span></td>
+                                            </tr>
+                                            {% endif %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mt-3">
+                            <div class="card p-1">
+                                <h5 class="card-heading text-center">Payment Information
+                                    <hr>
+                                </h5>
+                                <div class="">
+                                    <table class="table table-bordered">
+                                        <tbody>
+                                            <tr>
+                                                <th>Total Amount </th>
+                                                <td>Rs. {{booking.amount|intcomma}}/-</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Payment Status </th>
+                                                <td>{% if booking.payment_status %}<span
+                                                        class="badge bg-success">Paid</span>{% else %}<span
+                                                        class="badge bg-danger">Unpaid</span>{% endif %}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Payment method </th>
+                                                <td>{{booking.payment_method}} </td>
+                                            </tr>
+                                            <tr>
+                                                <th>Checked in Time </th>
+                                                <td>{% if booking.checkin_time %}{{booking.checkin_time}}{% endif %}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>Checked out Time </th>
+                                                <td>{% if booking.checkout_time %}{{booking.checkout_time}}{% endif %}
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script> //<!-- ui true bhayepaxi chahi request jane natra najane cancell wala -->
+    var act_btns = document.querySelectorAll(".act-btn");
+    act_btns.forEach(function (element) {
+        element.addEventListener("click", function (e) {
+            e.preventDefault();
+            var action = element.getAttribute("data-act");
+            var ui = false;
+            var remarks = "";
+            if(action === "br"){
+                ui = true;
+                var remarks = prompt("Why are you rejecting this booking?");
+            }else{
+                ui = confirm("Are you sure to take this action?")
+            }
+            if (ui == true) {
+                var fd = new FormData();
+                fd.append("csrfmiddlewaretoken", "{{csrf_token}}")
+                fd.append("action", action)
+                fd.append("remarks", remarks)
+                fetch('', {
+                    method: "POST",
+                    body: fd
+                })
+                    .then(response => response.json())
+                    .then(json => {
+                        console.log(json)
+                        location.href = "";
+                    })
+                    .catch(err => console.log(err))
+            }
+        })
+    })
+</script>
+{% endblock %}

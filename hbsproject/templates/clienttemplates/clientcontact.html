@@ -1,0 +1,75 @@
+{% extends 'clienttemplates/clientbase.html' %}
+{% load static %}
+
+{% block title %}Contact Form{% endblock %}
+
+{% block content %}
+<section class="mt-3">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card p-3">
+                <div class="card-head">
+                    <h4>Hotel Booking System</h4>
+                </div>
+                <hr>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 p-3">
+                            <h4>Contact Form</h4> <hr>
+                            <form action="" method="POST">
+                                {% csrf_token %}
+                                {{contact_form.as_p}}
+                                <button class="btn btn-info w-50"> Send Message</button>
+                            </form>
+                        </div>
+                        <div class="col-md-6 p-3">
+                            <h4>Our Contact Information</h4> <hr>
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <table class="table">
+                                        <tbody>
+                                            <tr>
+                                                <th>Organization</th>
+                                                <td>Hootel Booking System</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Address</th>
+                                                <td>Kathmandu, Nepal</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Email</th>
+                                                <td>hotelbooking@gmail.com</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Phone/Mobile</th>
+                                                <td>01-959595/9898989898</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Viber</th>
+                                                <td>9898989898</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Whatsapp</th>
+                                                <td>9898989898</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Facebook Page</th>
+                                                <td><a target="_blank" href="https://facebook.com">Hotel Booking System</a></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Locate Us</th>
+                                                <td><a target="_blank" href="https://www.google.com/maps/place/Islington+College/@27.7084614,85.3250377,17.79z/data=!4m12!1m6!3m5!1s0x39eb1908434cb3c5:0x1fdf1a6d41d2512d!2sIslington+College!8m2!3d27.7087242!4d85.3260543!3m4!1s0x39eb1908434cb3c5:0x1fdf1a6d41d2512d!8m2!3d27.7087242!4d85.3260543">Google Map</a></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
